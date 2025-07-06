@@ -97,7 +97,12 @@ Nomzodning NestJS, autentifikatsiya, DTO validatsiya, custom decoratorlar, hamda
 
 ---
 
-Muddat 48 soat.
-Ishlatish uchun sizga subdomain va token beriladi.
-Tayyor bo‘lgach, GitHub linkni yuboring.
-Savollar bo‘lsa, issue qoldiring.
+### Ko'rsatmalar
+- Muddat 48 soat.
+- Ishlatish uchun sizga subdomain va token beriladi.
+- Tayyor bo‘lgach, GitHub linkni yuboring.
+- Savollar bo‘lsa, issue qoldiring.
+
+---
+
+# Omad!
