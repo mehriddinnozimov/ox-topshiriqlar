@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, User } from '@prisma/client';
 
 declare global {
   type PrismaTransaction = Omit<
@@ -9,6 +9,6 @@ declare global {
 
 declare module 'express' {
   interface Request {
-    user: UserTokenInfo;
+    user: User;
   }
 }
