@@ -1,0 +1,47 @@
+datasource db {
+    url      = env("DATABASE_URL")
+    provider = "postgresql"
+}
+
+generator client {
+    provider      = "prisma-client-js"
+    binaryTargets = ["native", "debian-openssl-3.0.x"]
+}
+
+enum Role {
+    ADMIN
+    MANAGER
+}
+
+model User {
+    id         Int      @unique @default(autoincrement())
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt
+
+    email     String        @unique
+    companies UserCompany[]
+}
+
+model Company {
+    id         Int      @unique @default(autoincrement())
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt
+
+    token     String
+    subdomain String @unique
+
+    users UserCompany[]
+}
+
+model UserCompany {
+    id         Int      @unique @default(autoincrement())
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt
+
+    user_id    Int
+    company_id Int
+    role       Role
+
+    user    User    @relation(fields: [user_id], references: [id])
+    company Company @relation(fields: [company_id], references: [id])
+}

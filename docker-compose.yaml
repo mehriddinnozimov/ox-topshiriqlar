@@ -1,0 +1,73 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - '${POSTGRES_PORT}:5432'
+    volumes:
+      - database_data:/var/lib/postgresql/data
+    networks:
+      - app-network
+    command: >
+      postgres
+        -c listen_addresses=* 
+        -c log_statement=all 
+        -c log_min_error_statement=error 
+        -c log_connections=on 
+        -c log_disconnections=on 
+        -c log_duration=on 
+        -c log_error_verbosity=verbose
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U $POSTGRES_USER']
+      interval: 10s
+      retries: 5
+      start_period: 10s
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    env_file:
+      - .env
+    ports:
+      - '${APP_PORT}:${APP_PORT}'
+    networks:
+      - app-network
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:${APP_PORT}/health']
+      interval: 10s
+      retries: 5
+      start_period: 10s
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    ports:
+      - "${REDIS_PORT}:${REDIS_PORT}"
+    env_file:
+      - .env
+    volumes:
+      - redis_data:/data
+    networks:
+      - app-network
+    command: sh -c "redis-server --appendonly yes --save 60 1 --requirepass \"$REDIS_PASSWORD\""
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      retries: 5
+      start_period: 10s
+volumes:
+  database_data:
+    driver: local
+  redis_data:
+    driver: local
+networks:
+  app-network:
+    driver: bridge
