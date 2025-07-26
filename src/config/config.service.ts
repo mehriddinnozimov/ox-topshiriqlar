@@ -13,5 +13,7 @@ export class ConfigService implements OnModuleInit {
   public readonly REDIS_PASSWORD = process.env.REDIS_PASSWORD as string;
   public readonly OX_DOMAIN = process.env.OX_DOMAIN as string;
 
+  public readonly COOKIE_SECRET = process.env.COOKIE_SECRET as string;
+
   onModuleInit() {}
 }

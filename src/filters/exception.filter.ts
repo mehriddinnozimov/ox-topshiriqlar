@@ -7,23 +7,26 @@ export class AllExceptionsFilter implements ExceptionFilter {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
 
+    let message = 'Something went wrong.';
+    let status = 500;
+
+    console.error('Unhandled error:', exception);
+
     if (exception instanceof HttpException) {
-      const status =
+      const _status =
         exception instanceof HttpException
           ? exception.getStatus()
           : HttpStatus.INTERNAL_SERVER_ERROR;
 
-      let message = exception.getResponse();
-      if (status === 500) {
-        message = 'Something went wrong.';
+      if (_status !== 500) {
+        message = exception.getResponse() as string;
+        status = _status;
       }
-
-      console.error('Unhandled error:', exception);
-
-      response.status(status).json({
-        success: false,
-        message,
-      });
     }
+
+    response.status(status).json({
+      success: false,
+      message,
+    });
   }
 }

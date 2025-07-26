@@ -27,6 +27,7 @@ export async function execWithRetry<
 >(fn: Fn, args: Parameters<Fn>, retries = 3, delay = 1000): Promise<Awaited<RT>> {
   for (let i = 0; i < retries; i++) {
     try {
+      console.log({ tried: i });
       return (await fn(...args)) as Awaited<RT>;
     } catch (error) {
       if (i === retries - 1) throw error;
